@@ -50,6 +50,11 @@
           proxy_cache_lock: true
           proxy_cache_min_uses: 5
           proxy_cache_revalidate: true
+          proxy_cache_valid:
+            valid_1m:
+              status_codes:
+                - any
+              time: "1m"
           proxy_cache_use_stale:
             - error
             - timeout
@@ -83,6 +88,16 @@
                 - Vary
                 - Cache-Control
               proxy_redirect: false
+              proxy_cache_valid:
+                valid_10m:
+                  status_codes:
+                    - 200
+                    - 302
+                  time: "10m"
+                valid_1m:
+                  status_codes:
+                    - 301
+                  time: "1h"
               proxy_set_header:
                 header_host:
                   name: Host

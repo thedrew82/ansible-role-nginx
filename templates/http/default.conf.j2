@@ -31,6 +31,11 @@ proxy_cache_lock {{ item.value.reverse_proxy.proxy_cache_lock | ternary("on", "o
 {% if item.value.reverse_proxy.proxy_cache_min_uses is defined and item.value.reverse_proxy.proxy_cache_min_uses %}
 proxy_cache_min_uses {{ item.value.reverse_proxy.proxy_cache_min_uses }};
 {% endif %}
+{% if item.value.reverse_proxy.proxy_cache_valid is defined %}
+{% for response in item.value.reverse_proxy.proxy_cache_valid %}
+        proxy_cache_valid {{ item.value.reverse_proxy.proxy_cache_valid[response].status_codes|join(" ") }} {{ item.value.reverse_proxy.proxy_cache_valid[response].time }};
+{% endfor %}
+{% endif %}
 {% if item.value.reverse_proxy.proxy_cache_revalidate is defined and item.value.reverse_proxy.proxy_cache_revalidate %}
 proxy_cache_revalidate {{ item.value.reverse_proxy.proxy_cache_revalidate | ternary("on", "off") }};
 {% endif %}
@@ -203,6 +208,11 @@ server {
 {% if item.value.reverse_proxy.locations[location].denies is defined %}
 {% for deny in item.value.reverse_proxy.locations[location].denies %}
         deny {{ deny }};
+{% endfor %}
+{% endif %}
+{% if item.value.reverse_proxy.locations[location].proxy_cache_valid is defined %}
+{% for response in item.value.reverse_proxy.locations[location].proxy_cache_valid %}
+        proxy_cache_valid {{ item.value.reverse_proxy.locations[location].proxy_cache_valid[response].status_codes|join(" ") }} {{ item.value.reverse_proxy.locations[location].proxy_cache_valid[response].time }};
 {% endfor %}
 {% endif %}
 {% if item.value.reverse_proxy.locations[location].proxy_set_header is defined %}
